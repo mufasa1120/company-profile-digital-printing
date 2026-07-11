@@ -1,0 +1,23 @@
+# ============================================================
+#  Arahkan semua request (yang bukan file/folder nyata)
+#  ke index.php -> front controller.
+# ============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Jangan rewrite jika file/direktori-nya memang ada
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Sisanya lempar ke index.php
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Blokir akses langsung ke file sensitif
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+# Matikan directory listing
+Options -Indexes

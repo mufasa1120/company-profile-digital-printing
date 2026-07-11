@@ -1,0 +1,287 @@
+/* ============================================================
+   BRUTALISM — "PRESS SHEET" (v3: + animasi & dekorasi)
+   Grid nyambung + blok CMYK full-bleed + bintang animasi + halftone.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+    --cyan:    #00AEEF;
+    --magenta: #EC008C;
+    --yellow:  #FFED00;
+    --key:     #111111;
+    --paper:   #FFFFFF;
+    --grid:    #E3E3DD;
+
+    --display: 'Anton', 'Arial Narrow', sans-serif;
+    --body:    'Archivo', system-ui, sans-serif;
+    --mono:    'Space Mono', 'Courier New', monospace;
+
+    --bd:        3px solid var(--key);
+    --bd-thick:  5px solid var(--key);
+    --shadow:    6px 6px 0 var(--key);
+    --shadow-lg: 10px 10px 0 var(--key);
+
+    /* dua bentuk bintang siap pakai (dipotong dari kotak via clip-path) */
+    --star-4:  polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+    --burst-8: polygon(50% 0%, 56.9% 33.4%, 85.4% 14.6%, 66.6% 43.1%, 100% 50%, 66.6% 56.9%,
+                       85.4% 85.4%, 56.9% 66.6%, 50% 100%, 43.1% 66.6%, 14.6% 85.4%, 33.4% 56.9%,
+                       0% 50%, 33.4% 43.1%, 14.6% 14.6%, 43.1% 33.4%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--body);
+    color: var(--key);
+    line-height: 1.55;
+    overflow-x: hidden;                 /* cegah scroll samping dari dekorasi */
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--paper);
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+h1, h2, h3, .brand {
+    font-family: var(--display); font-weight: 400;
+    text-transform: uppercase; letter-spacing: 0.5px; line-height: 0.95;
+}
+a { color: var(--key); }
+
+/* ============================================================
+   KEYFRAMES — resep gerakan (dipakai ulang di banyak elemen)
+   ============================================================ */
+@keyframes spin  { to { transform: rotate(360deg); } }
+@keyframes float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-16px) rotate(10deg); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+@keyframes rise  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+/* ============================================================
+   DEKORASI BINTANG — bentuk via clip-path, gerak via animation
+   pointer-events:none -> tidak menghalangi klik apa pun
+   ============================================================ */
+.deco { position: absolute; pointer-events: none; }
+.deco.star  { clip-path: var(--star-4); }
+.deco.burst { clip-path: var(--burst-8); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 32px; background: transparent; }
+.nav .brand {
+    font-size: 1.4rem; text-decoration: none; color: var(--key);
+    background: var(--yellow); border: var(--bd); box-shadow: var(--shadow); padding: 8px 16px;
+}
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+    font-family: var(--mono); font-weight: 700; font-size: .8rem;
+    text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
+    color: var(--key); padding: 8px 12px; border: 3px solid transparent;
+}
+.nav-links a:hover { border-color: var(--key); background: var(--yellow); }
+.nav-toggle {
+    display: none; background: var(--key); color: var(--paper);
+    border: var(--bd); font-size: 1.4rem; line-height: 1; padding: 4px 12px; cursor: pointer;
+}
+
+/* ============================================================
+   HERO — kiri konten, kanan blok magenta + halftone + bintang
+   ============================================================ */
+.hero {
+    position: relative;                 /* jangkar untuk dekorasi absolut */
+    display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px;
+    align-items: center; padding: 64px 32px 72px;
+    background-image: none;
+}
+.hero::after {
+    content: '';
+    position: absolute; top: 0; bottom: 0; left: 54%; right: 0; z-index: -1;
+    background: var(--magenta);
+    border: var(--bd-thick);
+    box-shadow: var(--shadow-lg);
+}
+/* pola halftone di atas zona magenta -> biar tidak kotak polos */
+.hero::before {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 54%; right: 0; z-index: 0;
+    background-image: radial-gradient(rgba(17,17,17,.18) 2.2px, transparent 2.2px);
+    background-size: 15px 15px; pointer-events: none;
+}
+.hero > .hero-text, .hero > .hero-img { position: relative; z-index: 1; } /* konten di atas halftone */
+
+/* bintang: satu di belakang judul, dua menimpa blok magenta */
+.hero .deco-1 { width: 75px; aspect-ratio: 1; background: var(--magenta); border: var(--bd);
+                top: -50px; left: 19%; z-index: 0; animation: float 4.5s ease-in-out infinite; }
+.hero .deco-2 { width: 78px; aspect-ratio: 1; background: var(--cyan); border: var(--bd);
+                bottom: 40px; right: 0%; z-index: 2; animation: float 4.5s ease-in-out infinite; }
+.hero .deco-3 { width: 75px; aspect-ratio: 1; background: var(--yellow); border: var(--bd);
+                top: 40px; right: 41%; z-index: 2; animation: spin 10s linear infinite; }
+
+/* entrance: konten hero muncul berurutan saat halaman dibuka */
+.hero-text > * { animation: rise .55s ease both; }
+.hero-text > *:nth-child(1) { animation-delay: .05s; }
+.hero-text > *:nth-child(2) { animation-delay: .15s; }
+.hero-text > *:nth-child(3) { animation-delay: .25s; }
+.hero-text > *:nth-child(4) { animation-delay: .35s; }
+
+.eyebrow {
+    display: inline-block; font-family: var(--mono); font-weight: 700;
+    font-size: .78rem; text-transform: uppercase; letter-spacing: 1px;
+    background: var(--cyan); color: var(--key);
+    border: var(--bd); box-shadow: 3px 3px 0 var(--key); padding: 6px 12px; margin-bottom: 22px;
+}
+.hero h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); color: var(--key); }
+.hero .tagline { font-family: var(--mono); font-size: 1.05rem; margin: 20px 0 28px; max-width: 40ch; }
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.hero-img { position: relative; }
+.hero-img img { width: 100%; display: block; border: var(--bd-thick); box-shadow: var(--shadow-lg);
+                transition: transform .12s ease, box-shadow .12s ease; }
+.hero-img:hover img { transform: translate(-2px, -2px); box-shadow: 14px 14px 0 var(--key); }
+.hero-img::after {
+    content: '\2295'; position: absolute; top: -18px; right: -18px;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--yellow); color: var(--key);
+    font-size: 1.4rem; line-height: 40px; text-align: center; border: 3px solid var(--key);
+    animation: spin 9s linear infinite;      /* tanda registrasi berputar pelan */
+}
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+.block { padding: 72px 32px; }
+.block.alt { 
+    background: var(--cyan); 
+    position: relative; 
+    border-top: var(--bd-thick); 
+    border-bottom: var(--bd-thick); 
+}
+.block.alt::before {
+    content: ''; 
+    position: absolute; inset: 0; z-index: 0;
+    background-image: radial-gradient(rgba(17,17,17,.16) 2.2px, transparent 2.2px);
+    background-size: 15px 15px; 
+    pointer-events: none;
+}
+.block.alt > * { position: relative; z-index: 1; }
+.block h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
+.block h2::before { content: '\2295'; color: var(--magenta); font-size: .8em; }
+.block.alt h2::before { color: var(--key); }
+
+/* ============================================================
+   BINTANG DI SECTION BAWAH (Layanan / Produk / Portfolio)
+   ============================================================ */
+
+/* tiap section jadi jangkar + konten diangkat ke atas bintang */
+.block { position: relative; overflow: hidden; }
+.block h2, .block .grid, .block .gallery { position: relative; z-index: 1; }
+.block span.deco { z-index: 0; }        /* bintang selalu di belakang konten */
+
+/* dua gerakan baru biar variasi */
+@keyframes drift    { 0%,100% { transform: translate(0,0) rotate(0); } 50% { transform: translate(12px,-16px) rotate(-14deg); } }
+@keyframes spin-rev { to { transform: rotate(-360deg); } }
+
+/* --- LAYANAN KAMI --- */
+.deco-l1 { width: 62px; aspect-ratio: 1; background: var(--magenta); top: 83px;  right: 75%; animation: spin 16s linear infinite; }
+.block .deco-l2 { width: 150px; aspect-ratio: 1; background: var(--yellow); bottom: 90px; right: 6%; z-index: 3; animation: spin 5s linear infinite; }
+
+/* --- PRODUK KAMI (area cyan kosong di kanan) --- */
+.deco-p1 { width: 92px; aspect-ratio: 1; background: var(--magenta); top: 120px; right: 8%;  animation: spin-rev 18s linear infinite; }
+.deco-p2 { width: 46px; aspect-ratio: 1; background: var(--yellow);  bottom: 90px; right: 26%; animation: drift 6s ease-in-out infinite; }
+.deco-p3 { width: 34px; aspect-ratio: 1; background: var(--paper);   top: 44%;   right: 44%; animation: float 4s ease-in-out infinite; }
+
+/* --- PORTFOLIO --- */
+.deco-f1 { width: 68px; aspect-ratio: 1; background: var(--cyan);    top: 100px; right: 6%; animation: float 5.5s ease-in-out infinite; }
+.deco-f2 { width: 40px; aspect-ratio: 1; background: var(--magenta); bottom: 54px; left: 4%; animation: spin 14s linear infinite; }
+
+/* ============================================================
+   GRID KARTU & KARTU
+   ============================================================ */
+.grid, .gallery { display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.card { background: var(--paper); border: var(--bd-thick); box-shadow: var(--shadow); padding: 22px;
+        transition: transform .08s ease, box-shadow .08s ease;
+        position: relative; z-index: 1; }
+.card:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-lg); }
+.card h3 { font-size: 1.25rem; margin-bottom: 10px; }
+.card p { font-size: .95rem; }
+.card img { width: calc(100% + 44px); margin: -22px -22px 14px; display: block;
+            border-bottom: var(--bd-thick); aspect-ratio: 4/3; object-fit: cover; }
+.price { font-family: var(--mono); font-weight: 700; margin-top: 14px; display: inline-block;
+         background: var(--yellow); color: var(--key); border: 3px solid var(--key);
+         box-shadow: 3px 3px 0 var(--key); padding: 5px 12px; }
+figure.card { padding: 0; }
+figure.card img { width: 100%; margin: 0; border-bottom: var(--bd-thick); }
+figure.card figcaption { font-family: var(--mono); font-weight: 700; padding: 14px 18px; font-size: .9rem; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn { font-family: var(--mono); font-weight: 700; font-size: .9rem; text-transform: uppercase;
+       letter-spacing: 1px; text-decoration: none; display: inline-block; cursor: pointer;
+       background: var(--key); color: #fff; border: var(--bd-thick); box-shadow: var(--shadow);
+       padding: 14px 24px; transition: transform .08s ease, box-shadow .08s ease; }
+.btn:hover  { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--key); }
+.btn:active { transform: translate(6px, 6px); box-shadow: 0 0 0 var(--key); }
+.btn.wa    { background: #25D366; color: var(--key); }
+.btn.ghost { background: var(--paper); color: var(--key); }
+.btn.sm    { padding: 6px 12px; font-size: .72rem; box-shadow: 3px 3px 0 var(--key); border-width: 3px; }
+.btn.danger{ background: var(--magenta); color: #fff; }
+
+/* ============================================================
+   FORM
+   ============================================================ */
+.form { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
+.form label { font-family: var(--mono); font-weight: 700; font-size: .85rem; text-transform: uppercase;
+              letter-spacing: .5px; display: flex; flex-direction: column; gap: 6px; }
+.form input, .form textarea, .form select { font-family: var(--body); font-size: 1rem; padding: 12px 14px;
+              border: var(--bd-thick); background: var(--paper); color: var(--key); }
+.form input:focus, .form textarea:focus, .form select:focus { outline: none; box-shadow: var(--shadow); border-color: var(--cyan); }
+.form .check { flex-direction: row; align-items: center; gap: 10px; }
+.contact-wrap { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; }
+.contact-info p { margin-bottom: 14px; }
+.contact-info strong { font-family: var(--mono); }
+
+/* ============================================================
+   ALERT
+   ============================================================ */
+.alert { font-family: var(--mono); font-weight: 700; padding: 14px 18px; border: var(--bd-thick);
+         box-shadow: var(--shadow); margin-bottom: 24px; }
+.alert.ok  { background: var(--cyan); color: var(--key); }
+.alert.err { background: var(--magenta); color: #fff; }
+small.err  { color: var(--magenta); font-family: var(--mono); font-weight: 700; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px; padding: 48px 32px;
+        background: var(--key); color: var(--paper); font-family: var(--mono); font-size: .9rem; }
+.foot strong { font-family: var(--display); font-size: 1.3rem; font-weight: 400; letter-spacing: .5px; }
+.foot a { color: var(--paper); }
+.foot a:hover { color: var(--yellow); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; background-image: none; }
+    .hero::before { display: none; }                 /* halftone dimatikan di mobile */
+    .hero .deco-1, .hero .deco-3 { display: none; }   /* sisakan 1 bintang saja */
+    .hero-img { order: -1; background: var(--magenta); padding: 22px; border: var(--bd-thick); }
+    .hero-img img { box-shadow: var(--shadow); }
+    .contact-wrap { grid-template-columns: 1fr; }
+    .nav { flex-wrap: wrap; }
+    .nav-toggle { display: block; }
+    .nav-links { display: none; flex-direction: column; width: 100%; gap: 8px; margin-top: 12px; }
+    .nav-links.open { display: flex; }
+}
+
+/* ============================================================
+   AKSESIBILITAS — matikan SEMUA gerakan bila user minta
+   ============================================================ */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 4px solid var(--cyan); outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}

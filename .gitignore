@@ -1,0 +1,21 @@
+# Environment & rahasia
+.env
+
+# File upload dari user (jangan ikut ke repo)
+public/uploads/ads/*
+public/uploads/products/*
+public/uploads/portfolio/*
+!public/uploads/ads/.gitkeep
+!public/uploads/products/.gitkeep
+!public/uploads/portfolio/.gitkeep
+
+# Log
+storage/logs/*.log
+
+# Dependency & OS junk
+/vendor/
+.DS_Store
+Thumbs.db
+
+# Dump database berisi data asli
+database/digital_printingallin.sql
